@@ -1,0 +1,13 @@
+{
+  "name": "doctor-appointment-system",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "start-backend": "cd backend && npm run dev",
+    "start-frontend": "cd frontend && npm run dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

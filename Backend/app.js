@@ -1,21 +1,28 @@
 import express from 'express';
-import colors from 'colors';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from "cookie-parser"
 
 const app = express();
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
+    origin: process.env.CORS_ORIGIN
 }))
 
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
-import userRouter from './routes/user.routes.js';
+import router from './routes/user.routes.js';
 
-app.use('/api/v1/users', userRouter);
+try {
+    app.use('/api/v1/users', router);
+} catch (error) {
+    console.log("Error while setting up routes: ", error);  
+}
 
 export { app };
