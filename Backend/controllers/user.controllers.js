@@ -16,7 +16,7 @@ const generateAccessAndRefreshTokens = async(userId) => {
 
     } catch (error) {
         console.log(error);
-        throw new ApiError(500, "Something went wrong while generating asccess and refresh token")
+        throw new ApiError(500, "Something went wrong while generating access and refresh token")
     }
 }
 
@@ -128,4 +128,20 @@ const logoutUser = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, {}, "user logged Out"))
 })
 
-export { registerUser, loginUser, logoutUser }
+const getUserData = asyncHandler(async(req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password -refreshToken")
+
+        if(!user) {
+            throw new ApiError(404, "User not found")
+        } else{
+            return res.status(200)
+            .json(new ApiResponse(200, user, "User data fetched successfully"))
+        }
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Something went wrong while getting user data")
+    }
+})
+
+export { registerUser, loginUser, logoutUser, getUserData }

@@ -8,9 +8,12 @@ const app = express();
 import dotenv from 'dotenv';
 dotenv.config();
 
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN
+    origin: "http://localhost:5173", // Your frontend's origin
+    credentials: true
 }))
+
 
 app.use(express.json());
 app.use(morgan('dev'));
