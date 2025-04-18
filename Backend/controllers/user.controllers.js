@@ -78,6 +78,8 @@ const loginUser = asyncHandler( async (req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
+    console.log(accessToken, refreshToken);
+    
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 

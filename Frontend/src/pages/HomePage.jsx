@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
 function HomePage() {
+  const [name, setName] = useState("");
 
   const  getUserData = async () => {
     await axios
@@ -11,6 +12,8 @@ function HomePage() {
       .then((response) => {
         console.log(response.data);
         alert(response.data.message);
+        const username = response.data.data?.username;
+        setName(username || "No name found");
       })
       .catch((error) => {
         console.error("Error during getting user data:", error);
@@ -18,13 +21,16 @@ function HomePage() {
       });
   }
 
-  // useEffect(() => {
-  //   getUserData()
-  // }, []);
+  useEffect(() => {
+    getUserData()
+  }, []);
 
   return (
     <div>
       <h1>Home Page</h1>
+      <p>{name}</p>
+      {console.log(name)}
+      
     </div>
   )
 }

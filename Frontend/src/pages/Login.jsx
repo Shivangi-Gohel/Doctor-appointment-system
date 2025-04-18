@@ -1,28 +1,34 @@
 import React, {useState} from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { showLoading, hideLoading } from '../redux/features/alertSlice'
 import axios from 'axios'
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleLogin = async () => {
-      await axios
-        .post("http://localhost:8000/api/v1/users/login", { 
-          email,
-          password,
-        })
-        .then((response) => {
-          console.log(response.data);
-          alert(response.data.message);
-          navigate("/")
-        })
-        .catch((error) => {
-          console.error("Error during Login:", error);
-          alert("Login failed. Please try again.");
-        });
-    };
+    dispatch(showLoading())
+    await axios
+      .post("http://localhost:8000/api/v1/users/login", { 
+        email,
+        password,
+      })
+      .then((response) => {
+        dispatch(hideLoading())
+        console.log(response.data);
+        alert(response.data.message);
+        navigate("/")
+      })
+      .catch((error) => {
+        dispatch(hideLoading())
+        console.error("Error during Login:", error);
+        alert("Login failed. Please try again.");
+      });
+  }; 
 
 
   return (

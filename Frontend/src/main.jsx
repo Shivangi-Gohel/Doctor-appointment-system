@@ -7,6 +7,22 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
+import { Provider } from 'react-redux'
+import store from './redux/store.js'
+import { useSelector } from 'react-redux'
+import Spinner from './components/Spinner.jsx'
+
+const SpinnerWrapper = ({children}) => {
+  const loading = useSelector((state) => state.alerts.loading);
+  
+  return (
+    <>
+      {loading ? <Spinner/> : children  }
+      {console.log(loading)}
+      
+    </>
+  );
+};
 
 const router = createBrowserRouter([
   {
@@ -24,7 +40,11 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>,
+  <Provider store={store}>
+    <StrictMode>
+      <SpinnerWrapper>
+        <RouterProvider router={router}/>
+      </SpinnerWrapper>
+    </StrictMode>
+  </Provider>
 )

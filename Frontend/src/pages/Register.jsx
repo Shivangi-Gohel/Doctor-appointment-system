@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import axios from "axios";
 
 function Register () {
@@ -7,8 +9,10 @@ function Register () {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSignUp = async () => {
+    dispatch(showLoading());
     await axios
       .post("http://localhost:8000/api/v1/users/register", {  
         username,
@@ -16,11 +20,13 @@ function Register () {
         password,
       })
       .then((response) => {
+        dispatch(hideLoading())
         console.log(response.data);
         alert(response.data.message);
         navigate("/login")
       })
       .catch((error) => {
+        dispatch(hideLoading())
         console.error("Error during registration:", error);
         alert("Registration failed. Please try again.");
       });
@@ -58,7 +64,7 @@ function Register () {
         </button>
         <div className="text-center text-gray-500">
           Already Signed up?{" "}
-          <span className="text-blue-600 cursor-pointer" onClick={navigate('/login')}>Login</span>
+          <span className="text-blue-600 cursor-pointer" onClick={()=>navigate('/login')}>Login</span>
         </div>
       </div>
     </div>
