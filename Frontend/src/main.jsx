@@ -30,35 +30,35 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <ProtectedRoute> 
+      <ProtectedRoute> 
         <HomePage />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
     path: "/login",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <Login />
-      // </PublicRoute>
+      </PublicRoute>
     )
   },
   {
     path: "/register",
     element: (
-      // <PublicRoute>
+      <PublicRoute>
         <Register />
-      // </PublicRoute>
+      </PublicRoute>
     ),
   }
 ])
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <StrictMode>
+    {/* <StrictMode> */}
       <SpinnerWrapper>
         <RouterProvider router={router}/>
       </SpinnerWrapper>
-    </StrictMode>
+    {/* </StrictMode> */}
   </Provider>
 )

@@ -11,24 +11,30 @@ function Login() {
   const dispatch = useDispatch()
 
   const handleLogin = async () => {
-    dispatch(showLoading())
-    await axios
-      .post("http://localhost:8000/api/v1/users/login", { 
-        email,
-        password,
-      })
-      .then((response) => {
-        dispatch(hideLoading())
-        console.log(response.data);
-        alert(response.data.message);
-        navigate("/")
-      })
-      .catch((error) => {
-        dispatch(hideLoading())
-        console.error("Error during Login:", error);
-        alert("Login failed. Please try again.");
-      });
-  }; 
+    try {
+      dispatch(showLoading());
+  
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/users/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true, // Ensure cookies are sent/stored
+        }
+      );
+  
+      dispatch(hideLoading());
+      console.log(response.data);
+      alert(response.data.message);
+      navigate("/");
+    } catch (error) {
+      dispatch(hideLoading());
+      console.error("Error during Login:", error);
+      alert("Login failed. Please try again.");
+    }
+  };
 
 
   return (
@@ -54,7 +60,10 @@ function Login() {
         >
           Login
         </button>
-        
+        <div className="text-center text-gray-500">
+          Not have an account?{" "}
+          <span className="text-blue-600 cursor-pointer" onClick={()=>navigate('/register')}>Signup</span>
+        </div>
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Layout from '../components/Layout'
 
 function HomePage() {
   const [name, setName] = useState("");
@@ -44,13 +45,14 @@ function HomePage() {
     <div>
       <h1>Home Page</h1>
       <p>{name}</p>
-      {console.log(name)}
+      {/* {console.log(name)}
       <button
         onClick={handleLogout}
         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
       >
         Logout
-      </button>
+      </button> */}
+      <Layout/> 
     </div>
   )
 }
