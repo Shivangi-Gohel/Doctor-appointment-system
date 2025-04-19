@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 function HomePage() {
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   const  getUserData = async () => {
     await axios
@@ -21,6 +23,19 @@ function HomePage() {
       });
   }
 
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8000/api/v1/users/logout", {}, {
+        withCredentials: true,
+      });
+      alert("Logout successful");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+      alert("Logout failed. Please try again.");
+    }
+  };
+
   useEffect(() => {
     getUserData()
   }, []);
@@ -30,7 +45,12 @@ function HomePage() {
       <h1>Home Page</h1>
       <p>{name}</p>
       {console.log(name)}
-      
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+      >
+        Logout
+      </button>
     </div>
   )
 }

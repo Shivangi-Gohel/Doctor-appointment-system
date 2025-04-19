@@ -8,5 +8,6 @@ router.post('/register', registerUser);
 router.post("/login",loginUser)
 router.post("/logout", verifyJWT, logoutUser)
 router.get("/", verifyJWT, getUserData)
+router.get("/me", verifyJWT, getUserData)
 
 export default router;

@@ -11,6 +11,8 @@ import { Provider } from 'react-redux'
 import store from './redux/store.js'
 import { useSelector } from 'react-redux'
 import Spinner from './components/Spinner.jsx'
+import ProtectedRoute from './components/ProtectedRoutes.jsx'
+import PublicRoute from './components/PublicRoutes.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -27,15 +29,27 @@ const SpinnerWrapper = ({children}) => {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage/>,
+    element: (
+      // <ProtectedRoute> 
+        <HomePage />
+      // </ProtectedRoute>
+    ),
   },
   {
     path: "/login",
-    element: <Login/>,
+    element: (
+      // <PublicRoute>
+        <Login />
+      // </PublicRoute>
+    )
   },
   {
     path: "/register",
-    element: <Register/>,
+    element: (
+      // <PublicRoute>
+        <Register />
+      // </PublicRoute>
+    ),
   }
 ])
 
