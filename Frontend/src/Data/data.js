@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-export const SidebarMenu = [
+export const userMenu = [
     {
         name: 'Home',
         path: '/',
@@ -20,10 +20,29 @@ export const SidebarMenu = [
         name: 'Profile',
         path: '/profile',
         icon: 'fa-solid fa-user'
+    },
+]
+
+// Admin menu
+export const adminMenu = [
+    {
+        name: 'Home',
+        path: '/',
+        icon: 'fa-solid fa-house'
     }, 
     {
-        name: 'Logout',
-        path: '/logout',
-        icon: 'fa-solid fa-right-from-bracket'
-    }
+        name: 'Doctors',
+        path: '/doctors',
+        icon: 'fa-solid fa-user-doctor'
+    },
+    {
+        name: 'Users',
+        path: '/users',
+        icon: 'fa-solid fa-user'
+    }, 
+    {
+        name: 'Profile',
+        path: '/profile',
+        icon: 'fa-solid fa-user'
+    },
 ]

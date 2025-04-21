@@ -7,11 +7,15 @@ import axios from "axios";
 
 import { setUsers } from "../redux/features/userSlice";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
+import { useNavigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, authChecked } = useAuth();
   const dispatch = useDispatch()
   const {user} = useSelector((state) => state.user)
+  console.log("bhjdhj", user);
+  const navigate = useNavigate()
+  
 
   // get user
   const getUser = async () => {
@@ -25,10 +29,11 @@ const ProtectedRoute = ({ children }) => {
         console.log(res.data);
         dispatch(setUsers(res.data.data))
       } else {
-        <Navigate to="/login" />
+        navigate("/login")
       }
     } catch (error) {
       dispatch(hideLoading())
+      navigate("/login")
       console.error("Error during getting user data:", error);
     }
   }
@@ -41,7 +46,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!authChecked) return <Spinner />; 
 
-  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (!isAuthenticated) return navigate("/login");
 
   return children;
 };
