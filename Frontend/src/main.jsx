@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import Spinner from './components/Spinner.jsx'
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import PublicRoute from './components/PublicRoutes.jsx'
+import ApplyDoctor from './pages/ApplyDoctor.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -20,8 +21,6 @@ const SpinnerWrapper = ({children}) => {
   return (
     <>
       {loading ? <Spinner/> : children  }
-      {console.log(loading)}
-      
     </>
   );
 };
@@ -49,6 +48,14 @@ const router = createBrowserRouter([
       <PublicRoute>
         <Register />
       </PublicRoute>
+    ),
+  },
+  {
+    path: "/apply-doctor",
+    element: (
+      <ProtectedRoute>
+        <ApplyDoctor />
+      </ProtectedRoute>
     ),
   }
 ])

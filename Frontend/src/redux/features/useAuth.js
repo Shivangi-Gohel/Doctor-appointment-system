@@ -11,9 +11,7 @@ const useAuth = () => {
         const res = await axios.get("http://localhost:8000/api/v1/users/me", {
           withCredentials: true, 
         });
-        console.log(res.data);
         
-
         if (res.data.success) {
           setIsAuthenticated(true);
         } else {

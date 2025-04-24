@@ -1,20 +1,38 @@
-import React from "react";
+import React, { Children, useEffect, useState } from "react";
 import { adminMenu, userMenu } from "../Data/data";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {Bell} from 'lucide-react'
+import { Bell } from "lucide-react";
 import axios from "axios";
 
-const Layout = () => {
+const Layout = ({ children }) => {
   const navigate = useNavigate();
-  const {user} = useSelector((state) => state.user)
-  console.log(user);
+  const { user } = useSelector((state) => state.user);
+  const [notifications, setNotifications] = useState([]);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/users/me", {
+        withCredentials: true,
+      });
+      console.log("res: ",res);
+      
+      setNotifications(res.data.data.notification || []);
+      console.log("data.......", res.data.data.notification);
+    } catch (err) {
+      console.error("Error fetching notifications", err);
+    }
+  };
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/api/v1/users/logout", {}, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "http://localhost:8000/api/v1/users/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       alert("Logout successful");
       navigate("/login");
     } catch (err) {
@@ -22,9 +40,9 @@ const Layout = () => {
       alert("Logout failed. Please try again.");
     }
   };
-  
+
   // rendering menu list
-  const sidebarMenu = user?.isAdmin ? adminMenu : userMenu
+  const sidebarMenu = user?.isAdmin ? adminMenu : userMenu;
   return (
     <div className="p-2.5 h-screen">
       <div className="flex">
@@ -52,7 +70,10 @@ const Layout = () => {
                 <span>{item.name}</span>
               </NavLink>
             ))}
-            <div onClick={handleLogout} className="flex items-center gap-4 p-2 m-3 rounded transition">
+            <div
+              onClick={handleLogout}
+              className="flex items-center gap-4 p-2 m-3 rounded transition"
+            >
               <i className="fa-solid fa-right-from-bracket"></i>
               <span>Logout</span>
             </div>
@@ -61,12 +82,44 @@ const Layout = () => {
         <div className="w-full h-full">
           <div className="h-[10vh] mb-5 shadow shadow-gray-500 bg-white">
             <div className="flex items-center h-12.5 justify-end my-0 mx-4">
-            <Bell className="mr-5 mt-5 text-xl cursor-pointer " fill="black" />
-            <Link to='/profile' className="text-blue-600 uppercase text-xl mt-5">{user.username}</Link>
+              <Bell
+                className="mr-5 mt-5 text-xl cursor-pointer"
+                onClick={fetchNotifications}
+                fill="black"
+                repeatCount={notifications.length}
+              />
+              {notifications.length > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs px-1">
+                  {notifications.length}
+                </span>
+              )}
+              {open && (
+                <div className="absolute right-16 top-12 bg-white shadow-md rounded-md p-4 w-80 z-50 max-h-96 overflow-y-auto">
+                  <h4 className="text-lg font-semibold mb-2">Notifications</h4>
+                  {notifications.length === 0 ? (
+                    <p className="text-sm text-gray-600">
+                      {/* No new notifications */}
+                    </p>
+
+                  ) : (
+                    notifications.map((n, i) => (
+                      <div key={i} className="border-b py-2 text-sm">
+                        {n.message}
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+              <Link
+                to="/profile"
+                className="text-blue-600 uppercase text-xl mt-5"
+              >
+                {user.username}
+              </Link>
             </div>
           </div>
           <div className="h-[85vh] mb-5 shadow shadow-gray-500 bg-white">
-            Body
+            {children}
           </div>
         </div>
       </div>

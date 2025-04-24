@@ -13,7 +13,6 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, authChecked } = useAuth();
   const dispatch = useDispatch()
   const {user} = useSelector((state) => state.user)
-  console.log("bhjdhj", user);
   const navigate = useNavigate()
   
 
@@ -26,7 +25,6 @@ const ProtectedRoute = ({ children }) => {
       });
       dispatch(hideLoading())
       if(res.data.success) {
-        console.log(res.data);
         dispatch(setUsers(res.data.data))
       } else {
         navigate("/login")
