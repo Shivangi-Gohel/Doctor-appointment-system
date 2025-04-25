@@ -199,4 +199,23 @@ const applyDoctor = asyncHandler(async (req, res) => {
   }
 });
 
+const getNotifications = asyncHandler(async (req, res) => {
+  try {
+    const user =  await User.findById(req.user._id).select(
+      "-password -refreshToken"
+    );
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    } else {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, user.notification, "User data fetched successfully"));
+    } 
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Something went wrong while getting user data");
+  }
+}
+);
+
 export { registerUser, loginUser, logoutUser, getUserData, applyDoctor };

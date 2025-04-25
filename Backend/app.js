@@ -21,9 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 import router from './routes/user.routes.js';
+import adminRouter from './routes/admin.routes.js';
 
 try {
     app.use('/api/v1/users', router);
+    app.use('/api/v1/admin', adminRouter);
 } catch (error) {
     console.log("Error while setting up routes: ", error);  
 }

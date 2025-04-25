@@ -14,6 +14,8 @@ import Spinner from './components/Spinner.jsx'
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import PublicRoute from './components/PublicRoutes.jsx'
 import ApplyDoctor from './pages/ApplyDoctor.jsx'
+import Doctors from './pages/admin/Doctors.jsx'
+import Users from './pages/admin/Users.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -55,6 +57,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <ApplyDoctor />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/getAllUsers",
+    element: (
+      <ProtectedRoute>
+        <Users/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/admin/doctors",
+    element: (
+      <ProtectedRoute>
+        <Doctors/>
       </ProtectedRoute>
     ),
   }
