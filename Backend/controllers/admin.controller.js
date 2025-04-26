@@ -28,4 +28,25 @@ const getAllDoctors = asyncHandler(async (req, res) => {
     }
 }); 
 
-export { getAllUsers, getAllDoctors };
+const changeAccountStatus = asyncHandler(async (req, res) => {  
+  try {
+    const {doctorId, status} = req.body;
+    const doctor = await Doctor.findByIdAndUpdate(doctorId, {status});
+    const user = await User.findOne({_id: doctor.userId});
+    
+    const notification = user.notification;
+    notification.push({
+      type: "doctor-status-updated",
+      message: `Your account status has been updated to ${status}`,
+      onClickPath: "/notification",
+    })
+    user.isDoctor = status === 'approved' ? true: false;
+    await user.save();
+    res.status(200).json(new ApiResponse(200, doctor, "Doctor status updated successfully"));
+  } catch (error) {
+    throw new ApiError(500, "Error updating Doctor status");
+  }
+}
+);
+
+export { getAllUsers, getAllDoctors, changeAccountStatus };

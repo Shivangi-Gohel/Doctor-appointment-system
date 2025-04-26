@@ -8,6 +8,7 @@ import axios from "axios";
 const Layout = ({ children }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
+  
   const [notifications, setNotifications] = useState([]);
 
   const fetchNotifications = async () => {
@@ -41,8 +42,27 @@ const Layout = ({ children }) => {
     }
   };
 
+  const doctorMenu = [
+    {
+        name: 'Home',
+        path: '/',
+        icon: 'fa-solid fa-house'
+    },
+    {
+        name: 'Appoinments',
+        path: '/appoinments',
+        icon: 'fa-solid fa-calendar-check'
+    },
+    {
+        name: 'Profile',
+        path: `/profile/${user?._id}`,
+        icon: 'fa-solid fa-user'
+    },
+]
+
   // rendering menu list
-  const sidebarMenu = user?.isAdmin ? adminMenu : userMenu;
+  const sidebarMenu = user?.isAdmin ? adminMenu : user?.isDoctor ? doctorMenu : userMenu;
+  
   return (
     <div className="p-2.5 h-screen">
       <div className="flex">

@@ -16,6 +16,7 @@ import PublicRoute from './components/PublicRoutes.jsx'
 import ApplyDoctor from './pages/ApplyDoctor.jsx'
 import Doctors from './pages/admin/Doctors.jsx'
 import Users from './pages/admin/Users.jsx'
+import Profile from './pages/doctor/Profile.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -69,10 +70,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/doctors",
+    path: "/getAllDoctors",
     element: (
       <ProtectedRoute>
         <Doctors/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile/:id",
+    element: (
+      <ProtectedRoute>
+        <Profile/>
       </ProtectedRoute>
     ),
   }
