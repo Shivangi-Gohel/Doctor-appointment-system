@@ -22,10 +22,12 @@ app.use(cookieParser())
 
 import router from './routes/user.routes.js';
 import adminRouter from './routes/admin.routes.js';
+import doctorRouter from './routes/doctor.routes.js';
 
 try {
     app.use('/api/v1/users', router);
     app.use('/api/v1/admin', adminRouter);
+    app.use('/api/v1/doctors', doctorRouter);
 } catch (error) {
     console.log("Error while setting up routes: ", error);  
 }
