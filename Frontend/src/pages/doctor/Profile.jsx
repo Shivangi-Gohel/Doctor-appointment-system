@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import Layout from '../../components/Layout'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import { use } from 'react'
 import axios from 'axios'
+import { showLoading, hideLoading } from '../../redux/features/alertSlice'
 
 const Profile = () => {
   const {user} = useSelector((state) => state.user)
   const [doctor, setDoctor] = useState(null);
   const params = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
       firstname: "",
@@ -31,8 +34,23 @@ const Profile = () => {
       const res = await axios.post("http://localhost:8000/api/v1/doctors/getDoctorInfo", {userId: params.id}, {
         withCredentials: true,
       })
-      console.log(res.data);
       if(res.data.success) {
+        setFormData({
+          ...formData,
+          firstname: res.data.data.firstname,
+          lastname: res.data.data.lastname,
+          phone: res.data.data.phone,
+          email: res.data.data.email,
+          website: res.data.data.website,
+          address: res.data.data.address,
+          specialization: res.data.data.specialization,
+          experience: res.data.data.experience,
+          fees: res.data.data.fees,
+          timings: {
+            start: res.data.data.timings.start,
+            end: res.data.data.timings.end,
+          },
+        })
         setDoctor(res.data.data)
       }
     } catch (error) {
@@ -61,7 +79,6 @@ const Profile = () => {
   
     const handleSubmit = async(e) => {
       e.preventDefault();
-      // console.log("Form submitted:", formData);
       try{
         dispatch(showLoading());
         const res = await axios.post("http://localhost:8000/api/v1/doctors/updateProfile", {
@@ -69,13 +86,13 @@ const Profile = () => {
           userId: user._id,
         },
         {
-          withCredentials: true, // Ensure cookies are sent/stored
+          withCredentials: true,
         });
         console.log("response: ",res.data);
         
         dispatch(hideLoading());
         if(res.data.success){
-          alert("Doctor application submitted successfully!");
+          alert("Doctor information updated successfully!");
           navigate("/");
         } else {
           alert(res.data.message);
@@ -232,7 +249,7 @@ const Profile = () => {
               type="submit"
               className="bg-amber-950 !text-white px-6 py-2 rounded hover:bg-amber-900"
             >
-              Submit
+              Update
             </button>
           </div>
         </form>
