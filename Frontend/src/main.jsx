@@ -17,6 +17,7 @@ import ApplyDoctor from './pages/ApplyDoctor.jsx'
 import Doctors from './pages/admin/Doctors.jsx'
 import Users from './pages/admin/Users.jsx'
 import Profile from './pages/doctor/Profile.jsx'
+import BookingPage from './pages/BookingPage.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -82,6 +83,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Profile/>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/book-appointment/:doctorId",
+    element: (
+      <ProtectedRoute>
+        <BookingPage/>
       </ProtectedRoute>
     ),
   }

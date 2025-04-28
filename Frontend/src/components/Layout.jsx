@@ -16,10 +16,8 @@ const Layout = ({ children }) => {
       const res = await axios.get("http://localhost:8000/api/v1/users/me", {
         withCredentials: true,
       });
-      console.log("res: ",res);
       
       setNotifications(res.data.data.notification || []);
-      console.log("data.......", res.data.data.notification);
     } catch (err) {
       console.error("Error fetching notifications", err);
     }

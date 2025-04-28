@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { Appointment } from "../models/appointment.model.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -218,4 +219,46 @@ const getNotifications = asyncHandler(async (req, res) => {
 }
 );
 
-export { registerUser, loginUser, logoutUser, getUserData, applyDoctor };
+const getAllDoctor = asyncHandler(async (req, res) => {
+  try {
+    const doctors = await Doctor.find({ status: "approved" });
+    if (!doctors) {
+      throw new ApiError(404, "Doctors not found");
+    } else {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, doctors, "Doctors data fetched successfully"));
+    }
+    console.log(doctors);
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Something went wrong while getting user data");
+  }
+}
+);
+
+const bookAppointment = asyncHandler(async (req, res) => {
+  try {
+    req.body.status = "pending";
+    const newAppointment = new Appointment(req.body);
+    await newAppointment.save();
+    const user = await User.findOne({ _id: req.body.doctorInfo.userId });
+    user.notification.push({
+      type: "New-Appointment",
+      message: `A new Appointment request from ${req.body.userInfo.user.username}`,
+      onClickPath: "/users/appointments",
+    });
+    
+    await user.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, newAppointment, "Appointment booked successfully"));
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Something went wrong while booking appointment");
+  }
+}
+);
+
+
+export { registerUser, loginUser, logoutUser, getUserData, applyDoctor, getAllDoctor, getNotifications, bookAppointment };

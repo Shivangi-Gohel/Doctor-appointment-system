@@ -28,5 +28,19 @@ const updateProfile = asyncHandler(async (req, res) => {
     }
 })
 
+const getDoctorById = asyncHandler(async (req, res) => {
+    try {
+        const doctor = await Doctor.findOne({ _id: req.body.doctorId });
+        if (!doctor) {
+            throw new ApiError(404, "Doctor not found");
+        }
+        return res.status(200).json(new ApiResponse(200, doctor, "Doctor info fetched successfully"));
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Something went wrong while getting doctor info");
+    }
+}
+);
 
-export { getDoctorInfo, updateProfile };
+
+export { getDoctorInfo, updateProfile, getDoctorById };
