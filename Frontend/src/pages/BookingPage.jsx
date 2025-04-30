@@ -24,7 +24,6 @@ const BookingPage = () => {
           withCredentials: true,
         }
       );
-      console.log("Res...", res.data);
 
       if (res.data.success) {
         setDoctors(res.data.data);
@@ -53,10 +52,45 @@ const BookingPage = () => {
         {
           withCredentials: true,
         }
-      ); 
+      );
       dispatch(hideLoading());
 
       if (res.data.success) {
+        alert(res.data.message);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error);
+    }
+  };
+
+  const handleAvailability = async () => {
+    try {
+      setAvailable(true);
+      if (!date && !time) {
+        return alert("Please select date and time");
+      }
+      dispatch(showLoading());
+      const res = await axios.post(
+        "http://localhost:8000/api/v1/users/booking-availability",
+        {
+          doctorId: params.doctorId,
+          date: date,
+          time: {
+            start: startTime,
+            end: endTime,
+          },
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(hideLoading());
+
+      if (res.data.success) {
+        setAvailable(true);
+        alert(res.data.message);
+      } else {
         alert(res.data.message);
       }
     } catch (error) {
@@ -71,42 +105,72 @@ const BookingPage = () => {
 
   return (
     <Layout>
-      <h1>Booking Page</h1>
-      <div className="container">
-        {doctors && (
-          <div>
-            <h4>
-              Dr. {doctors.firstname} {doctors.lastname}
-            </h4>
-            <h4>Fees: {doctors.fees}</h4>
-            <h4>
-              Timings: {doctors?.timings?.start} - {doctors?.timings?.end}
-            </h4>
-            <input type="date" className="border w-[50%] rounded p-2" onChange={(e) => setDate(e.target.value)} />
-            <div className="md:col-span-2 w-[50%] mt-3 mb-3">
-              <div className="flex gap-4">
+      <h1 className="text-center text-2xl">Booking Page</h1>
+
+      <div className="flex justify-center p-4">
+        <div className="w-full max-w-2xl border rounded-2xl shadow-lg p-6 bg-white">
+          {doctors && (
+            <div>
+              <h4 className="text-2xl font-semibold mb-4">
+                Dr. {doctors.firstname} {doctors.lastname}
+              </h4>
+              <h4 className="text-lg mb-2">Fees: ₹{doctors.fees}</h4>
+              <h4 className="text-lg mb-4">
+                Timings: {doctors?.timings?.start} - {doctors?.timings?.end}
+              </h4>
+
+              <input
+                type="date"
+                className="border w-full rounded p-2 !mb-3"
+                onChange={(e) => {
+                  setAvailable(false);
+                  setDate(e.target.value);
+                }}
+              />
+
+              <div className="flex gap-4 mb-4">
                 <input
                   type="time"
                   name="start"
-                  placeholder="start time"
-                  onChange={(e) => setStartTime(e.target.value)}
+                  placeholder="Start time"
+                  onChange={(e) => {
+                    setAvailable(false);
+                    setStartTime(e.target.value);
+                  }}
                   required
                   className="w-full p-2 border rounded"
                 />
                 <input
                   type="time"
                   name="end"
-                  placeholder="end time"
-                  onChange={(e) => setEndTime(e.target.value)}
+                  placeholder="End time"
+                  onChange={(e) => {
+                    setAvailable(false);
+                    setEndTime(e.target.value);
+                  }}
                   required
                   className="w-full p-2 border rounded"
                 />
               </div>
+
+              <input
+                type="button"
+                value="Check Availability"
+                className="w-full bg-amber-950 !text-white p-2 rounded"
+                onClick={handleAvailability}
+              />
+
+              {!available && (
+                <input
+                  type="button"
+                  value="Book Now"
+                  className="w-full bg-emerald-800 !text-white p-2 rounded !mt-3"
+                  onClick={handleBooking}
+                />
+              )}
             </div>
-            <input type="button" value="Check Availability" className="justify-center bg-amber-950 w-[50%] !text-white p-2 rounded" /><br />
-            <input type="button" value="Book Now" className="justify-center bg-emerald-800 w-[50%] !text-white p-2 rounded !mt-3" onClick={handleBooking} />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </Layout>
   );

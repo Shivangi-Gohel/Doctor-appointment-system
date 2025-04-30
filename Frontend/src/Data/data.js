@@ -8,7 +8,7 @@ export const userMenu = [
     },
     {
         name: 'Appoinments',
-        path: '/book-appoinment',
+        path: '/appointments',
         icon: 'fa-solid fa-calendar-check'
     }, 
     {

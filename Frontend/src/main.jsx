@@ -18,6 +18,8 @@ import Doctors from './pages/admin/Doctors.jsx'
 import Users from './pages/admin/Users.jsx'
 import Profile from './pages/doctor/Profile.jsx'
 import BookingPage from './pages/BookingPage.jsx'
+import Appointments from './pages/Appointments.jsx'
+import DoctorAppointments from './pages/doctor/DoctorAppointments.jsx'
 
 const SpinnerWrapper = ({children}) => {
   const loading = useSelector((state) => state.alerts.loading);
@@ -93,6 +95,22 @@ const router = createBrowserRouter([
         <BookingPage/>
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "/appointments",
+    element: (
+      <ProtectedRoute>
+        <Appointments/>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/doctor-appointments",
+    element: (
+      <ProtectedRoute>
+        <DoctorAppointments/>
+      </ProtectedRoute>
+    )
   }
 ])
 

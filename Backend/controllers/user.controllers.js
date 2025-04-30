@@ -238,7 +238,10 @@ const getAllDoctor = asyncHandler(async (req, res) => {
 );
 
 const bookAppointment = asyncHandler(async (req, res) => {
-  try {
+  try {  
+    req.body.date = new Date(req.body.date);
+    req.body.time.start = `${req.body.date}T${req.body.time.start}`;
+    req.body.time.end = `${req.body.date}T${req.body.time.end}`; 
     req.body.status = "pending";
     const newAppointment = new Appointment(req.body);
     await newAppointment.save();
@@ -260,5 +263,47 @@ const bookAppointment = asyncHandler(async (req, res) => {
 }
 );
 
+const bookingAvailability = asyncHandler(async (req, res) => {
+  try {
+    const date = new Date(req.body.date);
+    const time = req.body.time;
+    const doctorId = req.body.doctorId;
+    const appointments = await Appointment.find({
+      doctorId,
+      date,
+      time: {
+        $gte: time.start,
+        $lte: time.end,
+      },
+    });
+    if (!appointments) {
+      throw new ApiError(404, "Appointments not found");
+    }
+    if(appointments.length === 0) {
+      return res.status(200).json(new ApiResponse(200, [], "No booked slots found"));
+    }
 
-export { registerUser, loginUser, logoutUser, getUserData, applyDoctor, getAllDoctor, getNotifications, bookAppointment };
+    return res.status(200).json(new ApiResponse(200, appointments, "Booked slots fetched successfully"));
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Something went wrong while fetching booked slots");
+  }
+});
+
+const userAppointment = asyncHandler(async (req, res) => {
+  try {
+    // console.log("userID......", req);
+    const userId = req.user?._id;
+    
+    const appointments = await Appointment.find({userId})
+    console.log("Appointments: ",appointments);
+    
+    return res.status(200).json(new ApiResponse(200, appointments, " Users appointments fetch Successfully"))
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Something went wrong while fetching appointment data")
+  }
+})
+
+
+export { registerUser, loginUser, logoutUser, getUserData, applyDoctor, getAllDoctor, getNotifications, bookAppointment, bookingAvailability, userAppointment };

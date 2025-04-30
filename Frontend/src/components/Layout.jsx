@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
     },
     {
         name: 'Appoinments',
-        path: '/appoinments',
+        path: '/doctor-appointments',
         icon: 'fa-solid fa-calendar-check'
     },
     {
@@ -64,7 +64,7 @@ const Layout = ({ children }) => {
   return (
     <div className="p-2.5 h-screen">
       <div className="flex">
-        <div className="min-h-full w-75 rounded-sm bg-amber-950 shadow-lg mr-5 text-white">
+        <div className="min-h-full overflow-y-hidden w-75 rounded-sm bg-amber-950 shadow-lg mr-5 text-white">
           <div>
             <h6 className="text-2xl text-center mx-0 my-5 h-[8.5vh]">
               DOC APP
@@ -97,7 +97,8 @@ const Layout = ({ children }) => {
             </div>
           </div>
         </div>
-        <div className="w-full h-full">
+
+        <div className="w-full h-full overflow-y-scroll">
           <div className="h-[10vh] mb-5 shadow shadow-gray-500 bg-white">
             <div className="flex items-center h-12.5 justify-end my-0 mx-4">
               <Bell

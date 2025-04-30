@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { Appointment } from "../models/appointment.model.js";
 
 const getDoctorInfo = asyncHandler(async (req, res) => {
     try {
@@ -42,5 +43,18 @@ const getDoctorById = asyncHandler(async (req, res) => {
 }
 );
 
+const doctorAppointment = asyncHandler(async (req, res) => {
+    try {
+        const doctor = await Doctor.findOne({userId: req.user._id})
+        console.log("Doctor...", doctor);
+        
+        const appointments = await Appointment.find({doctorId: doctor._id})
+        return res.status(200).json(new ApiResponse(200, appointments, "Doctor appointments fetch successfully"))
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Error in doctor aapointments")
+    }
+})
 
-export { getDoctorInfo, updateProfile, getDoctorById };
+
+export { getDoctorInfo, updateProfile, getDoctorById, doctorAppointment };
