@@ -56,5 +56,23 @@ const doctorAppointment = asyncHandler(async (req, res) => {
     }
 })
 
+const updateStatus = asyncHandler(asyncHandler(async (req, res) => {
+    try {
+        const {appointmentsId, status} = req.body;
+        const appointments = await Appointment.findByIdAndUpdate(appointmentsId, {status})
+        const user = await User.findOne({_id: appointments.userId});
+        user.notification.push({
+            type: "status-updated",
+            message: `Your appointment has been updated ${status}`,
+            onClickPath: "/doctors/appointments",
+        });
+        await user.save();
+        return res.status(200).json(new ApiResponse(200, "Appointment status updated"))
+    } catch (error) {
+        console.log(error);
+        throw new ApiError(500, "Error in update Status")
+    }
+}))
 
-export { getDoctorInfo, updateProfile, getDoctorById, doctorAppointment };
+
+export { getDoctorInfo, updateProfile, getDoctorById, doctorAppointment, updateStatus };

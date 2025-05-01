@@ -22,8 +22,20 @@ const DoctorAppointments = () => {
     }
   };
 
-  const handleStatus = () => {
+  const handleStatus = async(record, status) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/v1/doctors/update-status", {appointmentsId: record._id, status}, {
+        withCredentials: true
+      })
 
+      if(res.data.success) {
+        alert(res.data.message)
+        getAppointments();
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong")
+    }
   }
 
   useEffect(() => {
@@ -59,16 +71,14 @@ const DoctorAppointments = () => {
         title: 'Actions',
         dataIndex: 'actions',
         render: (text, record) => (
-            // console.log(record);
-            
             <div className="d-flex">
                 {record.status === 'pending' && (
                     <div className="d-flex">
-                        <button className="bg-green-600 rounded p-3 !text-white" onClick={() => handleStatus(record, "approved")}>Approved</button>
-                        <button className="bg-red-600 rounded p-3 !ml-4 !text-white" onClick={() => handleStatus(record, "reject")}>Reject</button>
+                        <button className="bg-green-600 rounded p-2 !text-white" onClick={() => handleStatus(record, "approved")}>Approved</button>
+                        <button className="bg-red-600 rounded p-2 !ml-4 !text-white" onClick={() => handleStatus(record, "reject")}>Reject</button>
                     </div>
                 )}
-            </div>
+            </div>           
         )
     }
   ];
