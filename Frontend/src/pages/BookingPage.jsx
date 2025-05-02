@@ -4,6 +4,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { url } from "../constant";
+import { toast } from "react-toastify";
 
 const BookingPage = () => {
   const user = useSelector((state) => state.user);
@@ -18,7 +20,7 @@ const BookingPage = () => {
   const getUserData = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/doctors/getDoctorById",
+        `${url}/doctors/getDoctorById`,
         { doctorId: params.doctorId },
         {
           withCredentials: true,
@@ -37,7 +39,7 @@ const BookingPage = () => {
     try {
       dispatch(showLoading());
       const res = await axios.post(
-        "http://localhost:8000/api/v1/users/book-appointment",
+        `${url}/users/book-appointment`,
         {
           doctorId: params.doctorId,
           userId: user.user._id,
@@ -56,7 +58,7 @@ const BookingPage = () => {
       dispatch(hideLoading());
 
       if (res.data.success) {
-        alert(res.data.message);
+        toast.success(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -68,11 +70,11 @@ const BookingPage = () => {
     try {
       setAvailable(true);
       if (!date && !time) {
-        return alert("Please select date and time");
+        return toast.error("Please select date and time");
       }
       dispatch(showLoading());
       const res = await axios.post(
-        "http://localhost:8000/api/v1/users/booking-availability",
+        `${url}/users/booking-availability`,
         {
           doctorId: params.doctorId,
           date: date,
@@ -89,9 +91,9 @@ const BookingPage = () => {
 
       if (res.data.success) {
         setAvailable(true);
-        alert(res.data.message);
+        toast.success(res.data.message);
       } else {
-        alert(res.data.message);
+        toast.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());

@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import Layout from "../../components/Layout";
 import { Table } from 'antd'
 import axios from "axios";
+import { url } from "../../constant";
+import { toast } from "react-toastify";
 
 const DoctorAppointments = () => {
   const [Appointments, setAppointments] = useState([]);
@@ -9,7 +11,7 @@ const DoctorAppointments = () => {
   const getAppointments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/v1/doctors/doctor-appointments",
+        `${url}/doctors/doctor-appointments`,
         {
           withCredentials: true,
         }
@@ -24,17 +26,17 @@ const DoctorAppointments = () => {
 
   const handleStatus = async(record, status) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/doctors/update-status", {appointmentsId: record._id, status}, {
+      const res = await axios.post(`${url}/doctors/update-status`, {appointmentsId: record._id, status}, {
         withCredentials: true
       })
 
       if(res.data.success) {
-        alert(res.data.message)
+        toast.success(res.data.message)
         getAppointments();
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong")
+      toast.error("Something went wrong")
     }
   }
 

@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react'
 import Layout from '../../components/Layout'
 import axios from 'axios'
 import { Table } from 'antd'
+import { url } from '../../constant'
+import { toast } from 'react-toastify'
 
 
 const Doctors = () => {
@@ -10,7 +12,7 @@ const Doctors = () => {
 
   const getDoctors = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/v1/admin/getAllDoctors', {
+      const res = await axios.get(`${url}/admin/getAllDoctors`, {
         withCredentials: true,
       });
       console.log("response ",res.data);
@@ -29,7 +31,7 @@ const Doctors = () => {
 
   const handleAccountStatus = async (doctorId, status) => {
     try {
-      const res = await axios.post('http://localhost:8000/api/v1/admin/changeAccountStatus', {
+      const res = await axios.post(`${url}/admin/changeAccountStatus`, {
         doctorId,
         status
       }, {
@@ -38,7 +40,7 @@ const Doctors = () => {
       console.log("response ",res.data);
       
       if (res.data.success) {
-        alert(res.data.message)
+        toast.success(res.data.message)
         getDoctors()
       } else {
         console.log(res.data.message)

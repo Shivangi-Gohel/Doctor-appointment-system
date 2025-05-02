@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Layout from "../components/Layout.jsx"
 import { Table } from 'antd'
+import { url } from '../constant.js'
 const Appointments = () => {
 
   const [Appointments, setAppointments] = useState([])
 
   const getAppointments = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users/user-appointments", {
+      const res = await axios.get(`${url}/users/user-appointments`, {
         withCredentials: true
       },)
       if(res.data.success) {

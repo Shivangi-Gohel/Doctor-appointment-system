@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Layout from '../components/Layout'
 import DoctorList from '../components/DoctorList';
+import { url } from '../constant';
 
 function HomePage() {
   const [doctors, setDoctors] = useState("");
 
   const getUserData = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users/getAllDoctor", {
+      const res = await axios.get(`${url}/users/getAllDoctor`, {
         withCredentials: true,
       });
       

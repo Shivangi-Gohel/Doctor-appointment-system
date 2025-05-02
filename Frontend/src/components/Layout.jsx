@@ -4,6 +4,8 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Bell } from "lucide-react";
 import axios from "axios";
+import {url} from "../constant";
+import { toast } from "react-toastify";
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ const Layout = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users/me", {
+      const res = await axios.get(`${url}/users/me`, {
         withCredentials: true,
       });
       
@@ -26,17 +28,17 @@ const Layout = ({ children }) => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:8000/api/v1/users/logout",
+        `${url}/users/logout`,
         {},
         {
           withCredentials: true,
         }
       );
-      alert("Logout successful");
+      toast.success("Logout successful")
       navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);
-      alert("Logout failed. Please try again.");
+      toast.error("Logout failed")
     }
   };
 

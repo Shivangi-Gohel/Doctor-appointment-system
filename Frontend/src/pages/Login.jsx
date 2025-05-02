@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/features/alertSlice';
 import axios from 'axios';
+import { url } from '../constant';
+import { toast } from 'react-toastify';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,18 +17,18 @@ function Login() {
       dispatch(showLoading());
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/users/login',
+        `${url}/users/login`,
         { email, password },
         { withCredentials: true }
       );
 
       dispatch(hideLoading());
-      alert(response.data.message);
+      toast.success(response.data.message);
       navigate('/');
     } catch (error) {
       dispatch(hideLoading());
       console.error('Login error:', error);
-      alert('Login failed. Please try again.');
+      toast.error('Login failed. Please try again.');
     }
   };
 

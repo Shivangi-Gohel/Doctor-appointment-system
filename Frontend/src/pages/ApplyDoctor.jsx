@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import axios from "axios";
+import { url } from "../constant";
+import { toast } from "react-toastify";
 
 const ApplyDoctorForm = () => {
   const {user} = useSelector((state) => state.user);
@@ -50,7 +52,7 @@ const ApplyDoctorForm = () => {
     // console.log("Form submitted:", formData);
     try{
       dispatch(showLoading());
-      const res = await axios.post("http://localhost:8000/api/v1/users/apply-doctor", {
+      const res = await axios.post(`${url}/users/apply-doctor`, {
         ...formData,
         userId: user._id,
       },
@@ -61,10 +63,10 @@ const ApplyDoctorForm = () => {
       
       dispatch(hideLoading());
       if(res.data.success){
-        alert("Doctor application submitted successfully!");
+        toast.success("Doctor application submitted successfully!")
         navigate("/");
       } else {
-        alert(res.data.message);
+        toast.error(res.data.message)
       }
     } catch(error) {
       dispatch(hideLoading());

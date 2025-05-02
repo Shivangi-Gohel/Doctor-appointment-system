@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react'
 import Layout from '../../components/Layout'
 import axios from 'axios'
 import { Table } from 'antd'
+import { url } from '../../constant'
 
 const Users = () => {
   const [users, setUsers] = useState([])
   
   const getUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/v1/admin/getAllUsers', {
+      const res = await axios.get(`${url}/admin/getAllUsers`, {
         withCredentials: true,
       });
       console.log("response ",res.data);

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import axios from "axios";
+import { url } from "../constant";
+import { toast } from "react-toastify";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -14,18 +16,18 @@ function Register() {
   const handleSignUp = async () => {
     dispatch(showLoading());
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/users/register", {
+      const response = await axios.post(`${url}/users/register`, {
         username,
         email,
         password,
       });
       dispatch(hideLoading());
-      alert(response.data.message);
+      toast.success(response.data.message);
       navigate("/login");
     } catch (error) {
       dispatch(hideLoading());
       console.error("Error during registration:", error);
-      alert("Registration failed. Please try again.");
+      toast.error("Registration failed. Please try again.");
     }
   };
 

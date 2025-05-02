@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { use } from 'react'
 import axios from 'axios'
 import { showLoading, hideLoading } from '../../redux/features/alertSlice'
+import { url } from '../../constant'
+import { toast } from 'react-toastify'
 
 const Profile = () => {
   const {user} = useSelector((state) => state.user)
@@ -31,7 +33,7 @@ const Profile = () => {
 
   const getDoctorInfo = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/doctors/getDoctorInfo", {userId: params.id}, {
+      const res = await axios.post(`${url}/doctors/getDoctorInfo`, {userId: params.id}, {
         withCredentials: true,
       })
       if(res.data.success) {
@@ -81,7 +83,7 @@ const Profile = () => {
       e.preventDefault();
       try{
         dispatch(showLoading());
-        const res = await axios.post("http://localhost:8000/api/v1/doctors/updateProfile", {
+        const res = await axios.post(`${url}/doctors/updateProfile`, {
           ...formData,
           userId: user._id,
         },
@@ -92,10 +94,10 @@ const Profile = () => {
         
         dispatch(hideLoading());
         if(res.data.success){
-          alert("Doctor information updated successfully!");
+          toast.success("Doctor information updated successfully!")
           navigate("/");
         } else {
-          alert(res.data.message);
+          toast.error(res.data.message)
         }
       } catch(error) {
         dispatch(hideLoading());

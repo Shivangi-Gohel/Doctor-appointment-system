@@ -239,9 +239,18 @@ const getAllDoctor = asyncHandler(async (req, res) => {
 
 const bookAppointment = asyncHandler(async (req, res) => {
   try {  
-    req.body.date = new Date(req.body.date);
-    req.body.time.start = `${req.body.date}T${req.body.time.start}`;
-    req.body.time.end = `${req.body.date}T${req.body.time.end}`; 
+    const timeStringToDate = (timeStr, date) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      const now = new Date(date);
+      now.setHours(hours, minutes, 0, 0);
+      return now;
+    };
+    req.body.date = req.body.date;
+    console.log("Date: ", req.body.date);
+    
+    req.body.time.start = timeStringToDate(req.body.time.start, req.body.date);
+    req.body.time.end = timeStringToDate(req.body.time.end, req.body.date); 
+    
     req.body.status = "pending";
     const newAppointment = new Appointment(req.body);
     await newAppointment.save();
@@ -251,6 +260,8 @@ const bookAppointment = asyncHandler(async (req, res) => {
       message: `A new Appointment request from ${req.body.userInfo.user.username}`,
       onClickPath: "/users/appointments",
     });
+    console.log("New ", newAppointment);
+    
     
     await user.save();
     return res
@@ -265,17 +276,31 @@ const bookAppointment = asyncHandler(async (req, res) => {
 
 const bookingAvailability = asyncHandler(async (req, res) => {
   try {
+    const timeStringToDate = (timeStr, date) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      const now = new Date(date); 
+      now.setHours(hours, minutes, 0, 0); 
+      return now;
+    };
     const date = new Date(req.body.date);
-    const time = req.body.time;
+    const startTime = timeStringToDate(req.body.time.start, req.body.date);
+    const endTime = timeStringToDate(req.body.time.end, req.body.date);
     const doctorId = req.body.doctorId;
-    const appointments = await Appointment.find({
-      doctorId,
-      date,
-      time: {
-        $gte: time.start,
-        $lte: time.end,
-      },
-    });
+    console.log("DoctorId: ", doctorId);
+    console.log("StartTime: ", startTime);
+    console.log("endTime: ", endTime);
+
+    console.log("Date: ", date);
+
+    
+    
+   const appointments = await Appointment.find({
+    doctorId,
+    date: new Date(date),
+    "time.start": { $lt: endTime },
+    "time.end": { $gt: startTime },
+  });
+  
     if (!appointments) {
       throw new ApiError(404, "Appointments not found");
     }
@@ -292,7 +317,6 @@ const bookingAvailability = asyncHandler(async (req, res) => {
 
 const userAppointment = asyncHandler(async (req, res) => {
   try {
-    // console.log("userID......", req);
     const userId = req.user?._id;
     
     const appointments = await Appointment.find({userId})

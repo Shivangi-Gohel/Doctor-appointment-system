@@ -8,6 +8,7 @@ import axios from "axios";
 import { setUsers } from "../redux/features/userSlice";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import { useNavigate } from "react-router-dom";
+import { url } from "../constant";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, authChecked } = useAuth();
@@ -20,7 +21,7 @@ const ProtectedRoute = ({ children }) => {
   const getUser = async () => {
     try {
       dispatch(showLoading())
-      const res = await axios.get("http://localhost:8000/api/v1/users/me", {
+      const res = await axios.get(`${url}/users/me`, {
         withCredentials: true, 
       });
       dispatch(hideLoading())
