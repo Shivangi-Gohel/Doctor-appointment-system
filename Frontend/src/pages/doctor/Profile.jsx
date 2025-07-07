@@ -90,7 +90,6 @@ const Profile = () => {
         {
           withCredentials: true,
         });
-        console.log("response: ",res.data);
         
         dispatch(hideLoading());
         if(res.data.success){

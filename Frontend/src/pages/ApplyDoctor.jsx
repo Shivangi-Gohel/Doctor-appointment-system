@@ -49,7 +49,6 @@ const ApplyDoctorForm = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    // console.log("Form submitted:", formData);
     try{
       dispatch(showLoading());
       const res = await axios.post(`${url}/users/apply-doctor`, {
@@ -59,7 +58,6 @@ const ApplyDoctorForm = () => {
       {
         withCredentials: true, // Ensure cookies are sent/stored
       });
-      console.log("response: ",res.data);
       
       dispatch(hideLoading());
       if(res.data.success){

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { url } from "../constant";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const BookingPage = () => {
   const user = useSelector((state) => state.user);
@@ -56,7 +57,7 @@ const BookingPage = () => {
         }
       );
       dispatch(hideLoading());
-
+      
       if (res.data.success) {
         toast.success(res.data.message);
       }
@@ -126,7 +127,7 @@ const BookingPage = () => {
                 className="border w-full rounded p-2 !mb-3"
                 onChange={(e) => {
                   setAvailable(false);
-                  setDate(e.target.value);
+                  setDate(moment(e.target.value, "YYYY-MM-DD").format("DD-MM-YYYY"));
                 }}
               />
 
@@ -137,7 +138,7 @@ const BookingPage = () => {
                   placeholder="Start time"
                   onChange={(e) => {
                     setAvailable(false);
-                    setStartTime(e.target.value);
+                    setStartTime(moment(e.target.value, "HH:mm").format("HH:mm"));
                   }}
                   required
                   className="w-full p-2 border rounded"
@@ -148,7 +149,7 @@ const BookingPage = () => {
                   placeholder="End time"
                   onChange={(e) => {
                     setAvailable(false);
-                    setEndTime(e.target.value);
+                    setEndTime(moment(e.target.value, "HH:mm").format("HH:mm"));
                   }}
                   required
                   className="w-full p-2 border rounded"

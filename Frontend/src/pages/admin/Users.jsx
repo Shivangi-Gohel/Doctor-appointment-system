@@ -12,7 +12,6 @@ const Users = () => {
       const res = await axios.get(`${url}/admin/getAllUsers`, {
         withCredentials: true,
       });
-      console.log("response ",res.data);
       
       if (res.data.success) {
         setUsers(res.data.data)
@@ -21,7 +20,6 @@ const Users = () => {
       }
     } catch (error) {
       console.log(error)
-      console.log(error.response.data);
       
     }
   }

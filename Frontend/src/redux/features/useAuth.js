@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { url } from "../../constant";
 const useAuth = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,7 +8,7 @@ const useAuth = () => {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/users/me", {
+        const res = await axios.get(`${url}/users/me`, {
           withCredentials: true, 
         });
         

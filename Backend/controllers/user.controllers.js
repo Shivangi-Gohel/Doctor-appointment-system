@@ -4,6 +4,7 @@ import { Doctor } from "../models/doctor.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { Appointment } from "../models/appointment.model.js";
+import moment from "moment";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -82,7 +83,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user._id
   );
-  console.log(accessToken, refreshToken);
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -111,8 +111,7 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-const logoutUser = asyncHandler(async (req, res) => {
-  console.log("REQ.USER: ", req.user);
+const logoutUser = asyncHandler(async (req, res) => { 
 
   await User.findByIdAndUpdate(
     req.user._id,
@@ -229,7 +228,6 @@ const getAllDoctor = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, doctors, "Doctors data fetched successfully"));
     }
-    console.log(doctors);
   } catch (error) {
     console.log(error);
     throw new ApiError(500, "Something went wrong while getting user data");
@@ -238,19 +236,13 @@ const getAllDoctor = asyncHandler(async (req, res) => {
 );
 
 const bookAppointment = asyncHandler(async (req, res) => {
-  try {  
-    const timeStringToDate = (timeStr, date) => {
-      const [hours, minutes] = timeStr.split(":").map(Number);
-      const now = new Date(date);
-      now.setHours(hours, minutes, 0, 0);
-      return now;
-    };
-    req.body.date = req.body.date;
-    console.log("Date: ", req.body.date);
-    
-    req.body.time.start = timeStringToDate(req.body.time.start, req.body.date);
-    req.body.time.end = timeStringToDate(req.body.time.end, req.body.date); 
-    
+  try {
+    const startDateTime = moment(`${req.body.date} ${req.body.time.start}`, 'DD-MM-YYYY HH:mm').format('YYYY-MM-DDTHH:mm');
+    const endDateTime = moment(`${req.body.date} ${req.body.time.end}`, 'DD-MM-YYYY HH:mm').format('YYYY-MM-DDTHH:mm');
+    req.body.date = moment(req.body.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+    req.body.time.start = startDateTime
+    req.body.time.end = endDateTime;
     req.body.status = "pending";
     const newAppointment = new Appointment(req.body);
     await newAppointment.save();
@@ -260,9 +252,6 @@ const bookAppointment = asyncHandler(async (req, res) => {
       message: `A new Appointment request from ${req.body.userInfo.user.username}`,
       onClickPath: "/users/appointments",
     });
-    console.log("New ", newAppointment);
-    
-    
     await user.save();
     return res
       .status(200)
@@ -271,44 +260,27 @@ const bookAppointment = asyncHandler(async (req, res) => {
     console.log(error);
     throw new ApiError(500, "Something went wrong while booking appointment");
   }
-}
-);
+});
 
 const bookingAvailability = asyncHandler(async (req, res) => {
   try {
-    const timeStringToDate = (timeStr, date) => {
-      const [hours, minutes] = timeStr.split(":").map(Number);
-      const now = new Date(date); 
-      now.setHours(hours, minutes, 0, 0); 
-      return now;
-    };
-    const date = new Date(req.body.date);
-    const startTime = timeStringToDate(req.body.time.start, req.body.date);
-    const endTime = timeStringToDate(req.body.time.end, req.body.date);
+    const date = moment(req.body.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    const fromTime = moment(req.body.time.start, 'HH:mm').subtract(1, 'hours').toISOString();
+    const toTime = moment(req.body.time.end, 'HH:mm').add(1, 'hours').toISOString();
     const doctorId = req.body.doctorId;
-    console.log("DoctorId: ", doctorId);
-    console.log("StartTime: ", startTime);
-    console.log("endTime: ", endTime);
-
-    console.log("Date: ", date);
-
+    const appointments = await Appointment.find({
+      doctorId,
+      date: { $eq: date },
+      "time.start": { $lt: toTime },
+      "time.end": { $gt: fromTime },
+    });
     
-    
-   const appointments = await Appointment.find({
-    doctorId,
-    date: new Date(date),
-    "time.start": { $lt: endTime },
-    "time.end": { $gt: startTime },
-  });
-  
-    if (!appointments) {
-      throw new ApiError(404, "Appointments not found");
-    }
     if(appointments.length === 0) {
-      return res.status(200).json(new ApiResponse(200, [], "No booked slots found"));
+      return res.status(200).json(new ApiResponse(200, appointments, "Appointment available at this time"));
     }
-
-    return res.status(200).json(new ApiResponse(200, appointments, "Booked slots fetched successfully"));
+    if(appointments.length > 0) {
+      return res.status(200).json(new ApiResponse(200, "Appointment not available at this time"));
+    }
   } catch (error) {
     console.log(error);
     throw new ApiError(500, "Something went wrong while fetching booked slots");
@@ -320,7 +292,6 @@ const userAppointment = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
     
     const appointments = await Appointment.find({userId})
-    console.log("Appointments: ",appointments);
     
     return res.status(200).json(new ApiResponse(200, appointments, " Users appointments fetch Successfully"))
   } catch (error) {

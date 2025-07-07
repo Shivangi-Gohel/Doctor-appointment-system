@@ -46,7 +46,6 @@ const getDoctorById = asyncHandler(async (req, res) => {
 const doctorAppointment = asyncHandler(async (req, res) => {
     try {
         const doctor = await Doctor.findOne({userId: req.user._id})
-        console.log("Doctor...", doctor);
         
         const appointments = await Appointment.find({doctorId: doctor._id})
         return res.status(200).json(new ApiResponse(200, appointments, "Doctor appointments fetch successfully"))

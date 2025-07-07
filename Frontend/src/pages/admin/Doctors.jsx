@@ -15,7 +15,6 @@ const Doctors = () => {
       const res = await axios.get(`${url}/admin/getAllDoctors`, {
         withCredentials: true,
       });
-      console.log("response ",res.data);
       
       if (res.data.success) {
         setDoctors(res.data.data)
@@ -24,8 +23,6 @@ const Doctors = () => {
       }
     } catch (error) {
       console.log(error)
-      console.log(error.response.data);
-      
     }
   }
 
@@ -37,7 +34,6 @@ const Doctors = () => {
       }, {
         withCredentials: true,
       });
-      console.log("response ",res.data);
       
       if (res.data.success) {
         toast.success(res.data.message)
@@ -47,7 +43,6 @@ const Doctors = () => {
       }
     } catch (error) {
       console.log(error)
-      console.log(error.response.data);
       
     }
   }
