@@ -1,1 +1,1 @@
-export const url = "http://localhost:8000/api/v1";
+export const url = "https://doctor-appointment-system-upa4.onrender.com/api/v1";
