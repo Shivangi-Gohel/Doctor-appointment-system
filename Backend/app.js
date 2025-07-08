@@ -10,7 +10,7 @@ dotenv.config();
 
 
 app.use(cors({
-    origin: "http://localhost:5173", // Your frontend's origin
+    origin: "https://doctor-appointment-system-lake.vercel.app/", // Your frontend's origin
     credentials: true
 }))
 
